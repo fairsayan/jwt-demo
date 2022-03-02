@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>JWT demo</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/jquery-hash@1.0.0/dist/jq-hash.min.js"></script>
+        <script>
+            $( document ).ready(function() {
+                $("form").submit(function(e){
+                    e.preventDefault()
+                    const username = $('#username').val()
+                    const password = $('#password').val()
+                    $.hash(password,'256','hex', async (passwordHash) => {
+                        $.ajax({
+                            url:'/login',
+                            type:"POST",
+                            data:JSON.stringify({
+                                username: username,
+                                pwdHash: passwordHash
+                            }),
+                            contentType:"application/json; charset=utf-8",
+                            dataType:"json"
+                        })
+                            .always((res) => {
+                                switch(res.status) {
+                                    case 200:
+                                        window.localStorage.setItem('token', res.responseText)
+                                        alert('You are now logged')
+                                        break
+                                    default:
+                                        alert(`status (${res.status}): ${res.responseText}`)
+                                }
+                            })
+                    })
+                })
+            })
+        </script>
+    </head>
+    <body>
+        <form action="#">
+            <div>
+                Username
+                <input id="username" name="usename" />
+            </div>
+            <div>
+                Password
+                <input id="password" name="password" />
+            </div>
+            <div>
+                <button type="submit">LOGIN</button>
+            </div>
+        </form>
+    </body>
+</html>

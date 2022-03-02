@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>JWT demo</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script>
+            $( document ).ready(function() {
+                const token = window.localStorage.getItem('token')
+                const headers = {}
+                if (token) headers['Authorization'] = `Bearer ${ token }`
+
+                $.ajax({
+                    url:'/contents/reserved',
+                    type:"GET",
+                    headers: headers
+                })
+                    .done( (data, status, jqXHR) => {
+                        console.log('sss')
+                        $('#content').text(data)
+                        $('#resetButton').show()
+                    })
+                    .fail( jqXHR => {
+                        $('#content').text(jqXHR.responseText)
+                        $('#resetButton').hide()
+                    } )
+
+                $('#resetButton').click( () => {
+                    window.localStorage.removeItem('token')
+                    alert('content reset!')
+                })
+            })
+
+
+        </script>
+    </head>
+    <body>
+        <div id="content"></div>
+        <div>
+            <button id="resetButton">RESET TOKEN</button>
+        </div>
+    </body>
+</html>
